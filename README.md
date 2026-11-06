@@ -28,7 +28,18 @@ pnpm lint        # eslint (flat config, typescript-eslint)
 pnpm format      # prettier
 ```
 
-Prerequisites: Node.js >= 22, pnpm 10.
+Prerequisites: Node.js >= 24 (match the Node version you build with — native
+modules like better-sqlite3 bind to the Node ABI), pnpm 11+.
+
+### If tests fail with `NODE_MODULE_VERSION ... requires NODE_MODULE_VERSION ...`
+
+You switched Node versions after a native module (better-sqlite3) was built.
+Re-target it to the Node you're running now:
+
+```bash
+pnpm rebuild better-sqlite3
+```
+
 
 ## Status
 
