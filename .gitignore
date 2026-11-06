@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+
+# build output
+dist/
+coverage/
+
+# local databases
+*.db
+*.sqlite
+*.db-journal
+*.db-wal
+*.db-shm
+data/
+
+# env & secrets
+.env
+.env.*
+
+# editors / OS
+.DS_Store
+Thumbs.db
