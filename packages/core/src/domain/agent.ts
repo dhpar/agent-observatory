@@ -1,18 +1,24 @@
 import { z } from 'zod';
 
-export const RunId = z.string();
-export type RunId = z.infer<typeof RunId>;
-
-/** A participant: one model with a role, attached to exactly one Run. */
+/**
+ * An Agent's provider/model now describes ANY endpoint: local Ollama,
+ * an OpenRouter free tier, or a paid native API. `baseURL` + ModelRef
+ * (see model.ts) make this an observation, not a vendor lock-in.
+ */
 export const AgentSchema = z.object({
   id: z.string(),
-  runId: RunId,
+  runId: z.string(),
   name: z.string().min(1),
   role: z.string().optional(),
-  /** 'openai' | 'anthropic' | 'ollama' for now; free-form for adapters later. */
-  provider: z.enum(['openai', 'anthropic', 'ollama']),
+  /**
+   * Any provider id — KnownProviders are suggestions, not an enum, so new
+   * OpenAI-compatible endpoints work without touching the domain.
+   */
+  provider: z.string().min(1),
   model: z.string().min(1),
-  /** Temperature, maxOutputTokens, baseURL overrides, ... */
+  /** Custom OpenAI-compatible endpoint, e.g. http://localhost:11434/v1. */
+  baseURL: z.url().optional(),
+  /** Temperature, maxOutputTokens, extra headers (never secrets), ... */
   params: z.record(z.string(), z.unknown()).optional(),
   createdAt: z.number().int(),
 });

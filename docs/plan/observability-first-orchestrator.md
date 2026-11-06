@@ -320,4 +320,29 @@ _Accepts:_ hard budget kill fires within one in-flight call; guardrail feed show
 
 ---
 
+## Amendment A — Model-selection pivot (2026-11-06)
+
+Recorded before M1, supersedes the "OpenAI + Anthropic + local" provider row in §2.
+
+- **Decision:** OpenAI-compatible-first. The SDK speaks the OpenAI chat
+  protocol for _most_ providers (Ollama, vLLM, LM Studio, llama.cpp,
+  OpenRouter free tiers, Groq, Together, future endpoints) via a unified
+  adapter; native OpenAI and Anthropic adapters exist for when David moves
+  to a paid tier.
+- **Consequences for the domain:** `Agent.provider` is an open string (the
+  known-provider list is UI guidance, not a gate); `Agent.baseURL` and
+  `ModelRef` (provider, model, baseURL, openWeights, freeTier) are now
+  domain concepts in `@observatory/core`.
+- **Consequences for cost:** per-model prices live ONLY in the versioned
+  pricing table (M3); free-tier/local rows carry 0 USD flagged `free`,
+  never silently zero — budgets must know a run was "free" on purpose.
+- **Consequences for the usage contract:** usage-report fidelity varies by
+  endpoint (not all report the prompt/completion split). The existing
+  `exact|estimated` fidelity flag handles this; the contract test suite in
+  §11 now covers Ollama/OpenRouter-style usage payloads, not just OpenAI's.
+- **Things NOT done here (deferred to M1/M3):** actual transport (SDK), the
+  pricing table itself, provider selection UI.
+
+---
+
 _End of plan._

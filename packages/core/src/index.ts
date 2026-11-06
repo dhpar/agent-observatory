@@ -6,3 +6,4 @@ export * from './domain/task';
 export * from './domain/guardrail';
 export * from './domain/context';
 export * from './domain/ledger';
+export * from './domain/model';

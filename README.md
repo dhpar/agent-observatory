@@ -14,7 +14,7 @@ Read it before touching anything inside `packages/`.
 
 ```
 packages/
-  core/   domain types & schemas (Run, Agent, Span, Budget, ...) — no deps beyond zod
+  core/   domain types & schemas (Run, Agent, Span, Budget, ModelRef, ...) — no deps beyond zod
   db/     SQLite persistence via Drizzle ORM (schema, data service)
 ```
 
@@ -39,7 +39,6 @@ Re-target it to the Node you're running now:
 ```bash
 pnpm rebuild better-sqlite3
 ```
-
 
 ## Status
 
