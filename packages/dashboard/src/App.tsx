@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Agent, Run, Span } from '@observatory/core';
+import { Activity, Bot, Layers, Rocket } from 'lucide-react';
 import { connectToObservatory, type Store } from './api';
 import { AgentCards, RunList, Timeline, TokenHealthBar } from './ui';
 
@@ -43,7 +44,7 @@ export default function App(): React.JSX.Element {
   return (
     <div className="layout">
       <header className="topbar">
-        <span className="brand">agent-observatory</span>
+        <span className="brand">Agent Observatory</span>
         {runScope.run && <TokenHealthBar run={runScope.run} tokens={tokens} />}
         <span className={`conn ${store.connected ? 'conn-on' : 'conn-off'}`}>
           {store.connected ? '● live' : '○ reconnecting…'}
@@ -68,6 +69,7 @@ export default function App(): React.JSX.Element {
               <Section
                 n={1}
                 title="Run"
+                icon={<Rocket size={15} aria-hidden />}
                 info="1 · Run — one orchestration execution: an objective, participant agents, budgets, and everything that happened under it. The objective is a human-readable label, not the prompt itself; actual prompts live on individual spans below."
               >
                 <div className="runhead">
@@ -121,6 +123,7 @@ export default function App(): React.JSX.Element {
               <Section
                 n={2}
                 title="Agents"
+                icon={<Bot size={15} aria-hidden />}
                 info="2 · Agents — named workers inside the run (e.g. 'researcher' on ollama/Qwen:latest). An agent is the doer; it does not hold tokens or cost directly — those attach to the spans it produces (section 4)."
               >
                 {runScope.agents.length === 0 ? (
@@ -136,6 +139,7 @@ export default function App(): React.JSX.Element {
               <Section
                 n={3}
                 title="Timeline · work over time"
+                icon={<Activity size={15} aria-hidden />}
                 info="3 · Timeline — time flows left to right. Each row (lane) is one agent from section 2; each bar on a lane is one span. A bar grows live while its span is running. Colors = span status: blue running · green completed · red failed · amber interrupted · grey pending."
               >
                 <Timeline run={runScope.run} agents={runScope.agents} spans={runScope.spans} />
@@ -145,6 +149,7 @@ export default function App(): React.JSX.Element {
               <Section
                 n={4}
                 title="Spans · full record"
+                icon={<Layers size={15} aria-hidden />}
                 info="4 · Spans — one observed unit of work each: an LLM call, a tool invocation, or a subagent spawn. Token counts and cost attach here, never to the run or agent directly. usageFidelity: 'exact' = reported by the provider; 'estimated' = derived locally, never claimed exact."
               >
                 <SpanInspectorList spans={runScope.spans} />
@@ -164,6 +169,7 @@ export default function App(): React.JSX.Element {
 function Section(props: {
   n: number;
   title: string;
+  icon?: React.ReactNode;
   info: string;
   children: React.ReactNode;
 }): React.JSX.Element {
@@ -171,6 +177,7 @@ function Section(props: {
     <div className="section">
       <h2 className="section-title">
         <span className="stepnum">{props.n}</span>
+        {props.icon}
         {props.title}
         <span className="info" title={props.info}>
           ?

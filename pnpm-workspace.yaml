@@ -8,3 +8,6 @@ allowBuilds:
   better-sqlite3: true
   esbuild: true
   prebuild-install: true
+
+minimumReleaseAgeExclude:
+  - lucide-react@1.70.0

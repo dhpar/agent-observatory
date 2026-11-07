@@ -172,15 +172,15 @@ code {
 .runitem {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 7px;
   width: 100%;
   text-align: left;
-  padding: 8px 10px;
-  margin-bottom: 6px;
+  padding: 13px 16px;
+  margin-bottom: 14px;
   background: var(--panel);
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
 }
 .runitem:hover {
@@ -216,21 +216,26 @@ code {
 .section-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 11px;
+  gap: 9px;
+  font-size: 14px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--muted);
+  letter-spacing: 1.2px;
+  color: var(--text);
   margin: 0 0 10px;
   border-bottom: 1px solid var(--border);
   padding-bottom: 6px;
+}
+.section-title svg {
+  color: var(--accent);
+  flex-shrink: 0;
 }
 .stepnum {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--accent);
   color: #0f1117;
