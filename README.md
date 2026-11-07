@@ -42,6 +42,15 @@ pnpm rebuild better-sqlite3
 
 ## Status
 
-M0 (scaffold) in progress — see plan §7 for milestones. Persistence currently
-uses ensure-schema DDL at boot; drizzle-kit migration tooling arrives with M1
-(tracing spine).
+M0 done · **M1 done** (tracing spine: SDK, OpenAI-compatible streaming, spans→SQLite, `observatory tail`).
+
+Try it end-to-end (needs [Ollama](https://ollama.com) running):
+
+```bash
+pnpm hello        # one observable run (también escribe a data/observatory.db)
+pnpm observatory  # in a second terminal: live span tail
+```
+
+Environment (all optional): `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, `OBSERVATORY_DB`.
+Persistence uses ensure-schema DDL at boot; drizzle-kit migration tooling
+arrives with M2 work on the server.

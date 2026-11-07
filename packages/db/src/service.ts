@@ -27,6 +27,38 @@ export function createRun(db: Db, run: Run): void {
     .run();
 }
 
+const rowToSpan = (row: typeof spans.$inferSelect): Span => ({
+  id: row.id,
+  runId: row.runId,
+  agentId: row.agentId ?? undefined,
+  parentSpanId: row.parentSpanId ?? undefined,
+  type: row.type as Span['type'],
+  name: row.name,
+  status: row.status as Span['status'],
+  startedAt: row.startedAt,
+  endedAt: row.endedAt ?? undefined,
+  inputTokens: row.inputTokens ?? undefined,
+  outputTokens: row.outputTokens ?? undefined,
+  costUsd: row.costUsd ?? undefined,
+  usageFidelity: row.usageFidelity as Span['usageFidelity'],
+  error: row.error ?? undefined,
+  retryOf: row.retryOf ?? undefined,
+  data: fromJSON(row.data),
+});
+
+const rowToLedgerEntry = (row: typeof costLedger.$inferSelect): CostLedgerEntry => ({
+  id: row.id,
+  runId: row.runId,
+  spanId: row.spanId ?? undefined,
+  tokensIn: row.tokensIn,
+  tokensOut: row.tokensOut,
+  costUsd: row.costUsd,
+  costClass: row.costClass as CostLedgerEntry['costClass'],
+  priceVersion: row.priceVersion ?? undefined,
+  fidelity: row.fidelity as CostLedgerEntry['fidelity'],
+  createdAt: row.createdAt,
+});
+
 export function getRun(db: Db, runId: string): Run | undefined {
   const row = db.select().from(runs).where(eq(runs.id, runId)).get();
   if (!row) return undefined;
@@ -137,24 +169,12 @@ export function listSpans(db: Db, runId: string): Span[] {
     .where(eq(spans.runId, runId))
     .orderBy(asc(spans.startedAt))
     .all()
-    .map((row) => ({
-      id: row.id,
-      runId: row.runId,
-      agentId: row.agentId ?? undefined,
-      parentSpanId: row.parentSpanId ?? undefined,
-      type: row.type as Span['type'],
-      name: row.name,
-      status: row.status as Span['status'],
-      startedAt: row.startedAt,
-      endedAt: row.endedAt ?? undefined,
-      inputTokens: row.inputTokens ?? undefined,
-      outputTokens: row.outputTokens ?? undefined,
-      costUsd: row.costUsd ?? undefined,
-      usageFidelity: row.usageFidelity as Span['usageFidelity'],
-      error: row.error ?? undefined,
-      retryOf: row.retryOf ?? undefined,
-      data: fromJSON(row.data),
-    }));
+    .map(rowToSpan);
+}
+
+/** Everything in the spans table, oldest first — used by `observatory tail`. */
+export function listAllSpans(db: Db): Span[] {
+  return db.select().from(spans).orderBy(asc(spans.startedAt)).all().map(rowToSpan);
 }
 
 /* ----------------------------------------------------------- cost ledger */
@@ -168,6 +188,7 @@ export function recordCost(db: Db, entry: CostLedgerEntry): void {
       tokensIn: entry.tokensIn,
       tokensOut: entry.tokensOut,
       costUsd: entry.costUsd,
+      costClass: entry.costClass,
       priceVersion: entry.priceVersion ?? null,
       fidelity: entry.fidelity,
       createdAt: entry.createdAt,
@@ -182,15 +203,5 @@ export function listLedger(db: Db, runId: string): CostLedgerEntry[] {
     .where(eq(costLedger.runId, runId))
     .orderBy(asc(costLedger.createdAt))
     .all()
-    .map((row) => ({
-      id: row.id,
-      runId: row.runId,
-      spanId: row.spanId ?? undefined,
-      tokensIn: row.tokensIn,
-      tokensOut: row.tokensOut,
-      costUsd: row.costUsd,
-      priceVersion: row.priceVersion ?? undefined,
-      fidelity: row.fidelity as CostLedgerEntry['fidelity'],
-      createdAt: row.createdAt,
-    }));
+    .map(rowToLedgerEntry);
 }

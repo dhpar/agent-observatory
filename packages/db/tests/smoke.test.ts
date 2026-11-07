@@ -73,6 +73,7 @@ describe('db smoke — hello-run writes one span', () => {
       tokensIn: 1200,
       tokensOut: 350,
       costUsd: 0.00218,
+      costClass: 'metered',
       priceVersion: 'pricing-2026-11',
       fidelity: 'exact',
       createdAt: t + 2_501,
@@ -102,6 +103,7 @@ describe('db smoke — hello-run writes one span', () => {
     expect(ledger).toHaveLength(1);
     expect(ledger[0]!.tokensIn + ledger[0]!.tokensOut).toBe(1550);
     expect(ledger[0]!.costUsd).toBeCloseTo(0.00218, 6);
+    expect(ledger[0]!.costClass).toBe('metered');
   });
 
   it('cascade-deletes spans and ledger entries with their run', () => {

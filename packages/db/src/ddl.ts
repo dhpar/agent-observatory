@@ -76,6 +76,7 @@ CREATE TABLE IF NOT EXISTS cost_ledger (
   tokens_in     INTEGER NOT NULL,
   tokens_out    INTEGER NOT NULL,
   cost_usd      REAL NOT NULL,
+  cost_class    TEXT NOT NULL DEFAULT 'unknown',
   price_version TEXT,
   fidelity      TEXT NOT NULL,
   created_at    INTEGER NOT NULL

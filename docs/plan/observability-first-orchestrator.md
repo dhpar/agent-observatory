@@ -345,4 +345,22 @@ Recorded before M1, supersedes the "OpenAI + Anthropic + local" provider row in 
 
 ---
 
+## Amendment A2 — Owned transport instead of AI SDK (2026-11-06)
+
+- Decision: M1's model access is a thin, owned OpenAI-compatible streaming
+  client (`fetch` + SSE, ~120 lines, zero runtime deps) inside
+  `@observatory/sdk`, behind a provider-agnostic `ChatTransport` seam.
+- Why: the Vercel AI SDK (plan §14) has moved to v7 — two majors beyond any
+  baseline verified in this workspace — while the M1 spine is the
+  highest-risk component and is tested offline via that seam. The owned
+  client covers every OpenAI-compatible endpoint (Ollama, vLLM, LM Studio,
+  llama.cpp, OpenRouter, Groq, Together, paid OpenAI).
+- Honest limitation: tool-calling/parallel-tool-call ergonomics may later
+  justify the AI SDK for M5+ guardrails on outputs; the seam makes swapping
+  (or dual-hosting) transports cheap. Re-evaluate at M6.
+- Consequence: `packages/sdk` has no LLM SDK dependency; offline contract
+  tests simulate SSE chunks through an injectable `fetch`.
+
+---
+
 _End of plan._

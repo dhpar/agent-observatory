@@ -11,11 +11,14 @@
     "test": "pnpm -r --stream run test",
     "typecheck": "pnpm -r run typecheck",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "hello": "tsx apps/playground/scripts/hello-run.ts",
+    "observatory": "tsx packages/sdk/src/cli.ts"
   },
   "devDependencies": {
     "eslint": "^9.39.5",
     "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
     "typescript-eslint": "^8.72.1"
   }
 }

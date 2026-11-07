@@ -1,5 +1,6 @@
 packages:
   - packages/*
+  - apps/*
 
 # pnpm 11+: package-level lifecycle scripts are opt-in. This file is the new
 # settings home — the old package.json "pnpm" field is no longer read.

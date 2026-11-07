@@ -81,6 +81,7 @@ export const costLedger = sqliteTable('cost_ledger', {
   tokensIn: integer('tokens_in').notNull(),
   tokensOut: integer('tokens_out').notNull(),
   costUsd: real('cost_usd').notNull(),
+  costClass: text('cost_class').notNull().default('unknown'),
   priceVersion: text('price_version'),
   fidelity: text('fidelity').notNull(),
   createdAt: integer('created_at').notNull(),
