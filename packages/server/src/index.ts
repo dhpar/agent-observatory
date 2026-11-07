@@ -84,7 +84,7 @@ export async function startObservatoryServer(options: ServerOptions = {}): Promi
   const wss = new WebSocketServer({ server: app.server, path: '/ws' });
   wss.on('connection', (socket) => {
     sockets.add(socket);
-    send(socket, { type: 'snapshot', snapshot: hub.snapshot() });
+    send(socket, { type: 'snapshot', snapshot: hub.clientSnapshot() });
     socket.on('close', () => sockets.delete(socket));
     socket.on('error', () => sockets.delete(socket));
   });

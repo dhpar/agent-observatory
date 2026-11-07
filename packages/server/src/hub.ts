@@ -36,6 +36,21 @@ export class Hub {
     };
   }
 
+  /**
+   * Full state for a NEW consumer, and marks everything seen so the next
+   * poll only emits true deltas. Without this, a poll firing right after
+   * the connect re-emits rows the snapshot already delivered (spurious
+   * 'run'/'agent'/'span' events). REST endpoints keep using the pure
+   * snapshot() — an HTTP read must not consume a WS client's delta credit.
+   */
+  clientSnapshot(): Snapshot {
+    const snap = this.snapshot();
+    this.markSeen(listRuns(this.db), 'run');
+    this.markSeen(listAllAgents(this.db), 'agent');
+    this.markSeen(listAllSpans(this.db), 'span');
+    return snap;
+  }
+
   /** One pass; returns everything that changed since the previous pass. */
   poll(): HubEvent[] {
     const events: HubEvent[] = [];
@@ -48,6 +63,12 @@ export class Hub {
     );
     this.diff(listAllSpans(this.db), 'span', (span) => ({ type: 'span' as const, span }), events);
     return events;
+  }
+
+  private markSeen<T extends { id: string }>(items: readonly T[], kind: string): void {
+    for (const item of items) {
+      this.seen.set(`${kind}:${item.id}`, JSON.stringify(item));
+    }
   }
 
   private diff<T extends { id: string }>(
