@@ -101,11 +101,15 @@ describe('tracing spine (M1)', () => {
 
   it('default transport is the OpenAI-compatible one wired to the modelRef', async () => {
     // Wire-ability check: agent() without transport must construct the
-    // OpenAI-compatible transport cleanly (connect failure surfaces, not a
-    // missing-module error).
+    // OpenAI-compatible transport cleanly. Port 9 (discard protocol) is
+    // guaranteed-refused — unit tests must never depend on a live endpoint.
     const observatory = createObservatory({ dbPath: ':memory:' });
     const run = observatory.run('wiring probe');
-    const agent = run.agent('wired', modelSpec); // no injected transport
-    await expect(agent.llm(userTurn)).rejects.toThrow(/stream broken|connect failed/);
+    const agent = run.agent('wired', {
+      provider: 'ollama',
+      model: 'llama3.2',
+      baseURL: 'http://127.0.0.1:9/v1',
+    }); // no injected transport
+    await expect(agent.llm(userTurn)).rejects.toThrow(/connect failed/);
   });
 });

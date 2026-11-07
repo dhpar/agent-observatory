@@ -11,7 +11,7 @@
  */
 import { createObservatory, type ChatMessage } from '@observatory/sdk';
 
-const baseURL = process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434/v1';
+const baseURL = process.env.OLLAMA_BASE_URL ?? 'http://127.0.0.1:11434/v1';
 const model = process.env.OLLAMA_MODEL ?? 'llama3.2';
 const dbPath = process.env.OBSERVATORY_DB ?? 'data/observatory.db';
 
@@ -50,5 +50,21 @@ try {
 } catch (error) {
   run.fail();
   console.error('[hello-run] run failed:', error);
+  try {
+    // Ollama's native API lives at the origin without the /v1 suffix;
+    // used purely for the DX hint below (never for scoring).
+    const u = new URL(baseURL);
+    const origin = `${u.protocol}//${u.host}`;
+    const tags = (await (await fetch(`${origin}/api/tags`)).json()) as {
+      models?: Array<{ name: string }>;
+    };
+    const names = tags.models?.map((m) => m.name) ?? [];
+    console.error(`[hint] models available on ${origin}: ${names.join(', ') || '(none)'}`);
+    console.error(
+      `[hint] set OLLAMA_MODEL=<one of those> — the default 'llama3.2' may not be installed on this machine.`,
+    );
+  } catch {
+    // hint is best-effort; never mask the real error
+  }
   process.exitCode = 1;
 }

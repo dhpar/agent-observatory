@@ -17,6 +17,23 @@ export interface OpenAICompatibleOptions {
   fetchImpl?: FetchLike;
 }
 
+/** Undici wraps real causes (ECONNREFUSED, AggregateError...). Unwrap them. */
+function describeFetchError(error: unknown): string {
+  const e = error as {
+    message?: string;
+    code?: string;
+    cause?: unknown;
+    errors?: unknown[];
+  } | null;
+  if (!e) return String(error);
+  if (Array.isArray(e.errors) && e.errors.length > 0) {
+    return e.errors.map(describeFetchError).join(' | ');
+  }
+  const message = e.message ?? String(error);
+  const nested = e.cause !== undefined ? describeFetchError(e.cause) : undefined;
+  return nested ? `${message} (${nested})` : message;
+}
+
 /**
  * Minimal OpenAI chat/completions streaming client. Speaks the protocol
  * served by Ollama, vLLM, LM Studio, llama.cpp, OpenRouter, Groq, Together
@@ -52,7 +69,10 @@ export function createOpenAICompatibleTransport(options: OpenAICompatibleOptions
         signal: request.signal,
       });
     } catch (error) {
-      yield { type: 'error', error: new Error(`connect failed: ${String(error)}`) };
+      yield {
+        type: 'error',
+        error: new Error(`connect failed: ${describeFetchError(error)}`),
+      };
       return;
     }
 

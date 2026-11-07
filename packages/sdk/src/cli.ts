@@ -11,6 +11,7 @@ import type { Span } from '@observatory/core';
 const args = process.argv.slice(2);
 const dbFlag = args.indexOf('--db');
 const dbPath = dbFlag !== -1 && args[dbFlag + 1] ? args[dbFlag + 1]! : 'data/observatory.db';
+const once = args.includes('--once'); // print current state and exit (postmortem mode)
 const db = openDatabase(path.resolve(dbPath));
 
 const seenStatus = new Map<string, Span['status']>();
@@ -51,9 +52,10 @@ const tick = async (): Promise<void> => {
 };
 
 void (async () => {
-  while (running) {
+  for (let first = true; running || first; first = false) {
     await tick();
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    if (once) running = false;
+    else await new Promise((resolve) => setTimeout(resolve, 500));
   }
   console.log('observatory: bye');
 })();
