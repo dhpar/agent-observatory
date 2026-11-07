@@ -1,0 +1,23 @@
+{
+  "name": "@observatory/server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.4.0",
+    "@fastify/static": "^10.1.0",
+    "@observatory/core": "workspace:*",
+    "@observatory/db": "workspace:*",
+    "fastify": "^5.12.0",
+    "ws": "^8.22.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.0",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  }
+}

@@ -1,0 +1,271 @@
+:root {
+  color-scheme: dark;
+  --bg: #0f1117;
+  --panel: #171a23;
+  --panel2: #1d2130;
+  --border: #2a2f42;
+  --text: #e5e7f0;
+  --muted: #8b8fa3;
+  --accent: #7c86ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font:
+    14px/1.5 'Segoe UI',
+    system-ui,
+    sans-serif;
+}
+
+#root,
+.layout {
+  min-height: 100vh;
+}
+.layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.conn {
+  margin-left: auto;
+  font-size: 12px;
+}
+.conn-on {
+  color: #22c55e;
+}
+.conn-off {
+  color: var(--muted);
+}
+
+.cols {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.sidebar {
+  width: 300px;
+  border-right: 1px solid var(--border);
+  padding: 10px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.runitem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.runitem:hover {
+  background: var(--panel2);
+}
+.runitem-active {
+  border-color: var(--accent);
+}
+.runitem-objective {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.runitem-meta {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.main {
+  flex: 1;
+  padding: 16px 20px;
+  overflow-y: auto;
+}
+.objective {
+  font-size: 16px;
+  margin: 0 12px 0 0;
+  display: inline;
+}
+.runheader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.tokens {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.pill {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.pill-running {
+  color: #3b82f6;
+  border-color: #3b82f6;
+}
+.pill-completed {
+  color: #22c55e;
+  border-color: #22c55e;
+}
+.pill-failed {
+  color: #ef4444;
+  border-color: #ef4444;
+}
+.pill-interrupted {
+  color: #f59e0b;
+  border-color: #f59e0b;
+}
+
+.timeline-wrap {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+.timeline {
+  width: 100%;
+  height: auto;
+}
+.lane {
+  fill: var(--panel2);
+}
+.lane-adhoc {
+  fill: transparent;
+}
+.axis {
+  stroke: var(--border);
+}
+.axis-label {
+  fill: var(--muted);
+  font-family: inherit;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-width: 240px;
+}
+.card-active {
+  border-color: #3b82f6;
+}
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.card-name {
+  font-weight: 600;
+}
+.pulse {
+  color: #3b82f6;
+  font-size: 11px;
+  animation: blink 1.2s infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+.card-model {
+  font-size: 12px;
+  color: var(--accent);
+  margin: 4px 0;
+}
+.card-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.section {
+  margin-bottom: 24px;
+}
+.section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+
+.inspector {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ins-row {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.ins-open {
+  border-color: var(--accent);
+}
+.ins-head {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text);
+  padding: 8px 12px;
+  cursor: pointer;
+  font: inherit;
+}
+.span-name {
+  font-weight: 500;
+}
+.ins-body {
+  margin: 0;
+  padding: 0 12px 10px;
+  font-size: 11px;
+  color: var(--muted);
+  max-height: 320px;
+  overflow: auto;
+}
+
+.muted {
+  color: var(--muted);
+}
+code {
+  background: var(--panel2);
+  padding: 1px 5px;
+  border-radius: 4px;
+}

@@ -1,4 +1,4 @@
-import { asc, eq } from 'drizzle-orm';
+import { asc, desc, eq } from 'drizzle-orm';
 import type { Agent, CostLedgerEntry, Run, Span, SpanPatch } from '@observatory/core';
 import type { Db } from './client';
 import { agents, costLedger, runs, spans } from './schema';
@@ -59,20 +59,22 @@ const rowToLedgerEntry = (row: typeof costLedger.$inferSelect): CostLedgerEntry 
   createdAt: row.createdAt,
 });
 
+const rowToRun = (row: typeof runs.$inferSelect): Run => ({
+  id: row.id,
+  objective: row.objective,
+  status: row.status as Run['status'],
+  budgetUsd: row.budgetUsd ?? undefined,
+  maxTokens: row.maxTokens ?? undefined,
+  startedAt: row.startedAt,
+  finishedAt: row.finishedAt ?? undefined,
+  createdAt: row.createdAt,
+  meta: fromJSON(row.meta),
+});
+
 export function getRun(db: Db, runId: string): Run | undefined {
   const row = db.select().from(runs).where(eq(runs.id, runId)).get();
   if (!row) return undefined;
-  return {
-    id: row.id,
-    objective: row.objective,
-    status: row.status as Run['status'],
-    budgetUsd: row.budgetUsd ?? undefined,
-    maxTokens: row.maxTokens ?? undefined,
-    startedAt: row.startedAt,
-    finishedAt: row.finishedAt ?? undefined,
-    createdAt: row.createdAt,
-    meta: fromJSON(row.meta),
-  };
+  return rowToRun(row);
 }
 
 export function setRunStatus(
@@ -104,22 +106,35 @@ export function addAgent(db: Db, agent: Agent): void {
     .run();
 }
 
+const rowToAgent = (row: typeof agents.$inferSelect): Agent => ({
+  id: row.id,
+  runId: row.runId,
+  name: row.name,
+  role: row.role ?? undefined,
+  provider: row.provider as Agent['provider'],
+  model: row.model,
+  params: fromJSON(row.params),
+  createdAt: row.createdAt,
+});
+
 export function listAgents(db: Db, runId: string): Agent[] {
+  return db.select().from(agents).where(eq(agents.runId, runId)).all().map(rowToAgent);
+}
+
+/** Every agent in the store, oldest first — used by the dashboard hub. */
+export function listAllAgents(db: Db): Agent[] {
+  return db.select().from(agents).all().map(rowToAgent);
+}
+
+/** Runs, newest first — used by the dashboard. */
+export function listRuns(db: Db, options?: { limit?: number }): Run[] {
   return db
     .select()
-    .from(agents)
-    .where(eq(agents.runId, runId))
+    .from(runs)
+    .orderBy(desc(runs.startedAt))
+    .limit(options?.limit ?? 200)
     .all()
-    .map((row) => ({
-      id: row.id,
-      runId: row.runId,
-      name: row.name,
-      role: row.role ?? undefined,
-      provider: row.provider as Agent['provider'],
-      model: row.model,
-      params: fromJSON(row.params),
-      createdAt: row.createdAt,
-    }));
+    .map(rowToRun);
 }
 
 /* ----------------------------------------------------------------- spans */

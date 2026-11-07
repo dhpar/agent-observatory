@@ -12,6 +12,9 @@
     "typecheck": "pnpm -r run typecheck",
     "lint": "eslint .",
     "format": "prettier --write .",
+    "build": "pnpm --filter @observatory/dashboard build",
+    "dev:server": "tsx watch packages/server/src/index.ts",
+    "dev:dashboard": "pnpm --filter @observatory/dashboard dev",
     "hello": "tsx apps/playground/scripts/hello-run.ts",
     "observatory": "tsx packages/sdk/src/cli.ts"
   },

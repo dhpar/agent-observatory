@@ -37,5 +37,8 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: 'Smoke tests (M0 gate: domain + SQLite round-trip)'
+      - name: 'Smoke tests'
         run: pnpm test
+
+      - name: Build dashboard (vite)
+        run: pnpm build
