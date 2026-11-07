@@ -51,6 +51,7 @@ pnpm hello        # one observable run (también escribe a data/observatory.db)
 pnpm observatory  # in a second terminal: live span tail
 ```
 
-Environment (all optional): `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, `OBSERVATORY_DB`.
+Environment (all optional): `OLLAMA_BASE_URL`, `OLLAMA_MODEL` (default:
+`Qwen:latest`), `OBSERVATORY_DB`.
 Persistence uses ensure-schema DDL at boot; drizzle-kit migration tooling
 arrives with M2 work on the server.

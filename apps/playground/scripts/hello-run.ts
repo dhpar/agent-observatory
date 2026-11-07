@@ -12,7 +12,7 @@
 import { createObservatory, type ChatMessage } from '@observatory/sdk';
 
 const baseURL = process.env.OLLAMA_BASE_URL ?? 'http://127.0.0.1:11434/v1';
-const model = process.env.OLLAMA_MODEL ?? 'llama3.2';
+const model = process.env.OLLAMA_MODEL ?? 'Qwen:latest';
 const dbPath = process.env.OBSERVATORY_DB ?? 'data/observatory.db';
 
 const observatory = createObservatory({ dbPath });
@@ -61,7 +61,7 @@ try {
     const names = tags.models?.map((m) => m.name) ?? [];
     console.error(`[hint] models available on ${origin}: ${names.join(', ') || '(none)'}`);
     console.error(
-      `[hint] set OLLAMA_MODEL=<one of those> — the default 'llama3.2' may not be installed on this machine.`,
+      `[hint] set OLLAMA_MODEL=<one of those> — the default 'Qwen:latest' may not be installed on this machine.`,
     );
   } catch {
     // hint is best-effort; never mask the real error
